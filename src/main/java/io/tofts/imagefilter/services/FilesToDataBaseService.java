@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -25,7 +27,7 @@ public class FilesToDataBaseService {
         FileOutputStream fos = new FileOutputStream(convFile);
         fos.write(file.getBytes());
         fos.close();
-        tagToDTO.convertJpgTag(ImageMetadataReader.readMetadata(convFile));
+        tagToDTO.convertJpgTag(convFile);
         convFile.delete();
         return true;
     }
