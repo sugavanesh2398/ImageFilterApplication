@@ -26,7 +26,7 @@ public class Jpg {
     @GeneratedValue(generator="system-uuid")
     @GenericGenerator(name="system-uuid", strategy = "uuid")
     private String imageId;
-    private String userName;
+    private String filename;
     private Date imageDate;
     private Time imageTime;
     private String imageHeight;
