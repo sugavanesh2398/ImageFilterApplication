@@ -21,11 +21,11 @@ public class FilesController {
     FilesToDataBaseService filesToDataBaseService;
 
     @PostMapping(value = "/addfiles")
-    public ResponseEntity FileProcess(@RequestParam MultipartFile[] files) throws IOException, ImageProcessingException {
+    public ResponseEntity FileProcess(@RequestParam MultipartFile[] files, @RequestParam String userName) throws IOException, ImageProcessingException {
 
         int count = 0;
         for (MultipartFile file : files) {
-            boolean result = filesToDataBaseService.convertFile(file);
+            boolean result = filesToDataBaseService.convertFile(file, userName);
             if (result)
                 count++;
 

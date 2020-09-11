@@ -21,13 +21,13 @@ public class FilesToDataBaseService {
     @Autowired
     TagToDTO tagToDTO;
 
-    public boolean convertFile(MultipartFile file) throws IOException, ImageProcessingException {
+    public boolean convertFile(MultipartFile file, String userName) throws IOException, ImageProcessingException {
 
         File convFile = new File(file.getOriginalFilename());
         FileOutputStream fos = new FileOutputStream(convFile);
         fos.write(file.getBytes());
         fos.close();
-        tagToDTO.convertJpgTag(convFile);
+        tagToDTO.convertJpgTag(convFile, userName);
         convFile.delete();
         return true;
     }
