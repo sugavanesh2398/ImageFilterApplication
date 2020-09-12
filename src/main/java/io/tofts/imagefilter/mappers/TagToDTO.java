@@ -7,7 +7,6 @@ import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.drew.metadata.file.FileSystemDirectory;
 import com.drew.metadata.file.FileTypeDirectory;
-import com.drew.metadata.iptc.IptcDirectory;
 import io.tofts.imagefilter.models.imageformatmodel.Jpg;
 import io.tofts.imagefilter.repository.ImageFilterRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +17,9 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Slf4j
 @Component
@@ -30,8 +32,8 @@ public class TagToDTO {
         try {
             Metadata jpgMetaData = ImageMetadataReader.readMetadata(file);
             FileTypeDirectory fileTypeDirectory = jpgMetaData.getFirstDirectoryOfType(FileTypeDirectory.class);
-            if (fileTypeDirectory.getString(FileTypeDirectory.TAG_DETECTED_FILE_TYPE_NAME) == FileType.Jpeg.getName())
-                fileToJpg(file, userName, jpgMetaData);
+            if (fileTypeDirectory.getString(FileTypeDirectory.TAG_DETECTED_FILE_TYPE_NAME).equals(FileType.Jpeg.getName()))
+                 fileToJpg(file, userName, jpgMetaData);
             else
                 log.error(fileTypeDirectory.getString(FileTypeDirectory.TAG_DETECTED_FILE_TYPE_NAME));
         } catch (Exception e) {
@@ -44,17 +46,6 @@ public class TagToDTO {
         Jpg jpg = new Jpg();
         ExifSubIFDDirectory exifDirectory = jpgMetaData.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
         FileSystemDirectory fileSystemDirectory = jpgMetaData.getFirstDirectoryOfType(FileSystemDirectory.class);
-        IptcDirectory dir = jpgMetaData.getFirstDirectoryOfType(IptcDirectory.class);
-//        int year = dir.getDate(IptcDirectory.TAG_DATE_CREATED).getYear();
-//        int month = dir.getDate(IptcDirectory.TAG_DATE_CREATED).getMonth();
-//        int date = dir.getDate(IptcDirectory.TAG_DATE_CREATED).getDate();
-//        System.out.println(exif.getDateOriginal() + " " + exif.getDateModified() + " " + exif.getDateDigitized());
-//        System.out.println(exif.getDateOriginal().getMonth() + " " + exif.getDateModified().getMonth() + " " + exif.getDateModified().getMonth());
-//        System.out.println(dir.getDateCreated() + " " + dir.getDateCreated().getMonth());
-//        check the date and time. we aren't getting propeer results
-//        Date datevalue = new Date(date, month, year);
-
-//        jpg.setImageDate(datevalue);
 
         jpg.setUserName(userName);
         if (exifDirectory != null) {
@@ -67,7 +58,7 @@ public class TagToDTO {
             jpg.setFocalLength(exifDirectory.getString(ExifSubIFDDirectory.TAG_FOCAL_LENGTH));
             jpg.setIso(exifDirectory.getString(ExifSubIFDDirectory.TAG_ISO_EQUIVALENT));
             jpg.setShutterSpeed(exifDirectory.getString(ExifSubIFDDirectory.TAG_SHUTTER_SPEED));
-//            jpg.setTimestamp(Timestamp.valueOf(exifDirectory.getString(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL)));
+            jpg.setTimestamp(getTimeStamp(exifDirectory.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL)));
             jpg.setImageFile(getFileBytes(file));
         }
 
@@ -82,6 +73,8 @@ public class TagToDTO {
         return jpg;
     }
 
+
+    //Helper Functions
     private String getMD5(File file) {
         String checksum = null;
         try {
@@ -93,12 +86,17 @@ public class TagToDTO {
     }
 
     private byte[] getFileBytes(File file) throws IOException {
-
         byte[] picInBytes = new byte[(int) file.length()];
         FileInputStream fileInputStream = new FileInputStream(file);
         fileInputStream.read(picInBytes);
         fileInputStream.close();
         return picInBytes;
+    }
+
+    private Timestamp getTimeStamp(Date date) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        String strDate = dateFormat.format(date);
+        return Timestamp.valueOf(strDate);
     }
 
 }
