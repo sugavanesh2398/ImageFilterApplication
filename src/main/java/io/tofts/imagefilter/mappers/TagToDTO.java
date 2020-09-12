@@ -1,12 +1,12 @@
 package io.tofts.imagefilter.mappers;
 
+import com.drew.imaging.FileType;
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.imaging.ImageProcessingException;
-import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
-import com.drew.metadata.Tag;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.drew.metadata.file.FileSystemDirectory;
+import com.drew.metadata.file.FileTypeDirectory;
 import com.drew.metadata.iptc.IptcDirectory;
 import io.tofts.imagefilter.models.imageformatmodel.Jpg;
 import io.tofts.imagefilter.repository.ImageFilterRepository;
@@ -23,26 +23,28 @@ import java.io.IOException;
 @Component
 public class TagToDTO {
     @Autowired
-    public ImageFilterRepository repository;
+    public ImageFilterRepository imageFilterRepository;
 
     public void getFileMetaData(File file, String userName) {
 
-        log.error(file.getName());
-        if (file.getName().contains("jpg"))
-            try {
-                fileToJpg(file, userName);
-            } catch (Exception e) {
-                log.error(e.getMessage());
-            }
+        try {
+            Metadata jpgMetaData = ImageMetadataReader.readMetadata(file);
+            FileTypeDirectory fileTypeDirectory = jpgMetaData.getFirstDirectoryOfType(FileTypeDirectory.class);
+            if (fileTypeDirectory.getString(FileTypeDirectory.TAG_DETECTED_FILE_TYPE_NAME) == FileType.Jpeg.getName())
+                fileToJpg(file, userName, jpgMetaData);
+            else
+                log.error(fileTypeDirectory.getString(FileTypeDirectory.TAG_DETECTED_FILE_TYPE_NAME));
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
 
     }
 
-    private Jpg fileToJpg(File file, String userName) throws ImageProcessingException, IOException {
+    private Jpg fileToJpg(File file, String userName, Metadata jpgMetaData) throws ImageProcessingException, IOException {
         Jpg jpg = new Jpg();
-        Metadata jpgMetadata = ImageMetadataReader.readMetadata(file);
-        ExifSubIFDDirectory exifDirectory = jpgMetadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
-        FileSystemDirectory fileSystemDirectory = jpgMetadata.getFirstDirectoryOfType(FileSystemDirectory.class);
-        IptcDirectory dir = jpgMetadata.getFirstDirectoryOfType(IptcDirectory.class);
+        ExifSubIFDDirectory exifDirectory = jpgMetaData.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
+        FileSystemDirectory fileSystemDirectory = jpgMetaData.getFirstDirectoryOfType(FileSystemDirectory.class);
+        IptcDirectory dir = jpgMetaData.getFirstDirectoryOfType(IptcDirectory.class);
 //        int year = dir.getDate(IptcDirectory.TAG_DATE_CREATED).getYear();
 //        int month = dir.getDate(IptcDirectory.TAG_DATE_CREATED).getMonth();
 //        int date = dir.getDate(IptcDirectory.TAG_DATE_CREATED).getDate();
@@ -65,7 +67,8 @@ public class TagToDTO {
             jpg.setFocalLength(exifDirectory.getString(ExifSubIFDDirectory.TAG_FOCAL_LENGTH));
             jpg.setIso(exifDirectory.getString(ExifSubIFDDirectory.TAG_ISO_EQUIVALENT));
             jpg.setShutterSpeed(exifDirectory.getString(ExifSubIFDDirectory.TAG_SHUTTER_SPEED));
-            //jpg.setTimestamp(Timestamp.valueOf(exif.getString(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL)));
+//            jpg.setTimestamp(Timestamp.valueOf(exifDirectory.getString(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL)));
+            jpg.setImageFile(getFileBytes(file));
         }
 
         if (fileSystemDirectory != null) {
@@ -74,12 +77,7 @@ public class TagToDTO {
         }
 
         jpg.setMd5(getMD5(file));
-        repository.save(jpg);
-        for (Directory directory : jpgMetadata.getDirectories()) {
-            for (Tag tag : directory.getTags()) {
-                System.err.println(tag.toString());
-            }
-        }
+        imageFilterRepository.save(jpg);
 
         return jpg;
     }
@@ -92,6 +90,15 @@ public class TagToDTO {
             log.error(e.getMessage());
         }
         return checksum;
+    }
+
+    private byte[] getFileBytes(File file) throws IOException {
+
+        byte[] picInBytes = new byte[(int) file.length()];
+        FileInputStream fileInputStream = new FileInputStream(file);
+        fileInputStream.read(picInBytes);
+        fileInputStream.close();
+        return picInBytes;
     }
 
 }
