@@ -4,13 +4,17 @@ spring:
       max-file-size: 100MB
       max-request-size: 100MB
   datasource:
-    url: jdbc:mysql://localhost:3306/image_processor
+    url: jdbc:mysql://localhost:3306/imagefilter
     username: root
-    password: Something@123
+    password: root
   jpa:
     hibernate:
       ddl-auto: update
       dialect: org.hibernate.dialect.MySQLDialect
+    properties:
+      hibernate:
+        validator:
+          apply_to_ddl:false
     show-sql: true
   output:
     ansi:

@@ -37,7 +37,7 @@ public class Jpg {
     private String aperture;
     private String focalLength;
     private String md5;
+    private String fileSize;
     private Timestamp timestamp;
-
 
 }
