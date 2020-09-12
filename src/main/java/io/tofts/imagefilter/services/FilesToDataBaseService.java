@@ -1,6 +1,7 @@
 package io.tofts.imagefilter.services;
 
 import com.drew.imaging.ImageProcessingException;
+import com.drew.metadata.Metadata;
 import io.tofts.imagefilter.mappers.TagToDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,15 +19,13 @@ public class FilesToDataBaseService {
     @Autowired
     TagToDTO tagToDTO;
 
-    public boolean convertFile(MultipartFile file, String userName) throws IOException, ImageProcessingException {
+    public Metadata convertFile(MultipartFile file, String userName) throws IOException, ImageProcessingException {
 
         File convFile = new File(file.getOriginalFilename());
         FileOutputStream fos = new FileOutputStream(convFile);
         fos.write(file.getBytes());
         fos.close();
-        tagToDTO.getFileMetaData(convFile, userName);
-        convFile.delete();
-        return true;
+        return tagToDTO.getFileMetaData(convFile, userName);
     }
 
 }

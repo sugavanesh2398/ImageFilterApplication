@@ -19,6 +19,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.Date;
 
 @Slf4j
@@ -27,19 +28,20 @@ public class TagToDTO {
     @Autowired
     public ImageFilterRepository imageFilterRepository;
 
-    public void getFileMetaData(File file, String userName) {
+    public Metadata getFileMetaData(File file, String userName) {
 
         try {
-            Metadata jpgMetaData = ImageMetadataReader.readMetadata(file);
-            FileTypeDirectory fileTypeDirectory = jpgMetaData.getFirstDirectoryOfType(FileTypeDirectory.class);
+            Metadata metaData = ImageMetadataReader.readMetadata(file);
+            FileTypeDirectory fileTypeDirectory = metaData.getFirstDirectoryOfType(FileTypeDirectory.class);
             if (fileTypeDirectory.getString(FileTypeDirectory.TAG_DETECTED_FILE_TYPE_NAME).equals(FileType.Jpeg.getName()))
-                 fileToJpg(file, userName, jpgMetaData);
+                 fileToJpg(file, userName, metaData);
             else
                 log.error(fileTypeDirectory.getString(FileTypeDirectory.TAG_DETECTED_FILE_TYPE_NAME));
+            return metaData;
         } catch (Exception e) {
             log.error(e.getMessage());
         }
-
+        return null;
     }
 
     private Jpg fileToJpg(File file, String userName, Metadata jpgMetaData) throws ImageProcessingException, IOException {
@@ -58,8 +60,9 @@ public class TagToDTO {
             jpg.setFocalLength(exifDirectory.getString(ExifSubIFDDirectory.TAG_FOCAL_LENGTH));
             jpg.setIso(exifDirectory.getString(ExifSubIFDDirectory.TAG_ISO_EQUIVALENT));
             jpg.setShutterSpeed(exifDirectory.getString(ExifSubIFDDirectory.TAG_SHUTTER_SPEED));
-            jpg.setTimestamp(getTimeStamp(exifDirectory.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL)));
+            jpg.setTimeStampFromImage(getTimeStamp(exifDirectory.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL)));
             jpg.setImageFile(getFileBytes(file));
+            jpg.setTimeStamp(Timestamp.from(Instant.now()));
         }
 
         if (fileSystemDirectory != null) {

@@ -39,8 +39,9 @@ public class Jpg {
     private String focalLength;
     private String md5;
     private String fileSize;
-    private Timestamp timestamp;
+    private Timestamp timeStampFromImage;
     @Lob
     private byte[] imageFile;
+    private Timestamp timeStamp;
 
 }

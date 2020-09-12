@@ -1,6 +1,7 @@
 package io.tofts.imagefilter.controller;
 
 import com.drew.imaging.ImageProcessingException;
+import com.drew.metadata.Metadata;
 import io.tofts.imagefilter.services.FilesToDataBaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @RestController
@@ -23,17 +26,12 @@ public class FilesController {
     @PostMapping(value = "/addfiles")
     public ResponseEntity FileProcess(@RequestParam MultipartFile[] files, @RequestParam String userName) throws IOException, ImageProcessingException {
 
-        int count = 0;
+        List<Metadata> metadataList = new ArrayList<Metadata>();
         for (MultipartFile file : files) {
-            boolean result = filesToDataBaseService.convertFile(file, userName);
-            if (result)
-                count++;
-
+            metadataList.add(filesToDataBaseService.convertFile(file, userName));
         }
+        return ResponseEntity.ok(metadataList);
 
-        if (count == files.length)
-            return ResponseEntity.ok().build();
-        return ResponseEntity.notFound().build();
     }
 
 }
