@@ -2,6 +2,7 @@ package io.tofts.imagefilter.controller;
 
 import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Metadata;
+import io.tofts.imagefilter.repository.ImageFilterRepository;
 import io.tofts.imagefilter.services.FilesToDataBaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,8 @@ public class FilesController {
 
     @Autowired
     FilesToDataBaseService filesToDataBaseService;
-
+    @Autowired
+    ImageFilterRepository repository;
     @PostMapping(value = "/addfiles")
     public ResponseEntity FileProcess(@RequestParam MultipartFile[] files, @RequestParam String userName) throws IOException, ImageProcessingException {
 
@@ -33,5 +35,11 @@ public class FilesController {
         return ResponseEntity.ok(metadataList);
 
     }
+    @PostMapping(value="/flushit/{username}")
+    public ResponseEntity DeleteFiles(@RequestParam String userName){
+        repository.deleteByUserName(userName);
+        return ResponseEntity.ok("files deleted");
+    }
+
 
 }
