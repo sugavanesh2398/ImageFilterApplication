@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Slf4j
 @Service
 public class JpgSearchService {
@@ -15,7 +17,7 @@ public class JpgSearchService {
     @Autowired
     ImageFilterRepository imageFilterRepository;
 
-    public Jpg jpgSearch(JpgSearchModel jpgSearchModel) {
+    public List<Jpg> jpgSearch(JpgSearchModel jpgSearchModel) {
 
         log.info(jpgSearchModel.toString());
 
@@ -34,9 +36,9 @@ public class JpgSearchService {
 
         log.error(jpg.toString());
 
-        log.error(imageFilterRepository.findAll(Example.of(jpg)).toString());
+        List<Jpg> imageList = imageFilterRepository.findAll(Example.of(jpg));
 
-        return null;
+        return imageList;
     }
 
 }

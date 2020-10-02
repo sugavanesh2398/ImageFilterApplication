@@ -3,11 +3,16 @@ package io.tofts.imagefilter.controller;
 import com.drew.imaging.FileType;
 import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Metadata;
+import io.tofts.imagefilter.models.imageformatmodel.Jpg;
 import io.tofts.imagefilter.models.searchmodel.JpgSearchModel;
 import io.tofts.imagefilter.repository.ImageFilterRepository;
 import io.tofts.imagefilter.services.FilesToDataBaseService;
 import io.tofts.imagefilter.services.JpgSearchService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,10 +46,24 @@ public class FilesController {
     }
 
     @PostMapping(value = "/search")
-    public ResponseEntity searchFiles(@RequestParam String imageFormat, @RequestBody JpgSearchModel jpgSearchModel) {
+    public List<ResponseEntity<Resource>> searchFiles(@RequestParam String imageFormat, @RequestBody JpgSearchModel jpgSearchModel) {
 
         if (FileType.Jpeg.getName().equals(imageFormat)) {
-            jpgSearchService.jpgSearch(jpgSearchModel);
+            List<Jpg> jpgs = jpgSearchService.jpgSearch(jpgSearchModel);
+            List<ResponseEntity<Resource>> files = new ArrayList<>();
+            jpgs.forEach(
+                    jpg -> {
+                        ResponseEntity<Resource> resourceResponseEntity;
+                        HttpHeaders httpHeaders = new HttpHeaders();
+                        httpHeaders.add("Content-Disposition", "attachment; filename=" + jpg.getFilename());
+                        resourceResponseEntity = ResponseEntity.ok()
+                               .contentType(MediaType.parseMediaType(MediaType.IMAGE_JPEG.toString()))
+                                .header(HttpHeaders.CONTENT_DISPOSITION,"attachment; filename=\""+jpg.getFilename())
+                                .body(new ByteArrayResource(jpg.getImageFile()));
+                        files.add(resourceResponseEntity);
+                    }
+            );
+            return files;
         }
 
         return null;
