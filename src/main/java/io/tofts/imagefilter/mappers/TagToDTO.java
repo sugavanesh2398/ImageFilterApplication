@@ -25,11 +25,11 @@ import java.util.Date;
 @Slf4j
 @Component
 public class TagToDTO {
+
     @Autowired
     public ImageFilterRepository imageFilterRepository;
 
     public Metadata getFileMetaData(File file, String userName) {
-
         try {
             Metadata metaData = ImageMetadataReader.readMetadata(file);
             FileTypeDirectory fileTypeDirectory = metaData.getFirstDirectoryOfType(FileTypeDirectory.class);

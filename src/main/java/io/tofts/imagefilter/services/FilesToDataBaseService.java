@@ -11,6 +11,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Slf4j
 @Service
@@ -19,13 +22,19 @@ public class FilesToDataBaseService {
     @Autowired
     TagToDTO tagToDTO;
 
+    private final String FOLDER_NAME = "imageFolder";
+
     public Metadata convertFile(MultipartFile file, String userName) throws IOException, ImageProcessingException {
 
         File convFile = new File(file.getOriginalFilename());
-        FileOutputStream fos = new FileOutputStream(convFile);
+        Path path = Paths.get(FOLDER_NAME);
+        if(!Files.exists(path))
+            Files.createDirectory(path);
+        FileOutputStream fos = new FileOutputStream(FOLDER_NAME+"/"+convFile);
         fos.write(file.getBytes());
         fos.close();
-        return tagToDTO.getFileMetaData(convFile, userName);
+        File folderPath = new File(FOLDER_NAME+"/"+convFile);
+        return tagToDTO.getFileMetaData(folderPath, userName);
     }
 
 }

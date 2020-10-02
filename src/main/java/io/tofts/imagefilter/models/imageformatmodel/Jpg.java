@@ -1,6 +1,7 @@
 package io.tofts.imagefilter.models.imageformatmodel;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
@@ -16,6 +17,7 @@ import java.sql.Timestamp;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
 public class Jpg {
 
@@ -26,7 +28,7 @@ public class Jpg {
     private String userName;
     private String filename;
     private Date imageDate;
-    private Time mageTime;
+    private Time makeTime;
     private String imageHeight;
     private String imageWidth;
     private String make;
