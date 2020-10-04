@@ -46,25 +46,24 @@ public class FilesController {
     }
 
     @PostMapping(value = "/search")
-    public List<ResponseEntity<Resource>> searchFiles(@RequestParam String imageFormat, @RequestBody JpgSearchModel jpgSearchModel) {
+    public ResponseEntity<Resource> searchFiles(@RequestParam String imageFormat, @RequestBody JpgSearchModel jpgSearchModel) {
 
         if (FileType.Jpeg.getName().equals(imageFormat)) {
             List<Jpg> jpgs = jpgSearchService.jpgSearch(jpgSearchModel);
             List<ResponseEntity<Resource>> files = new ArrayList<>();
-            jpgs.forEach(
-                    jpg -> {
+//            jpgs.forEach(
+//                    jpg -> {
+            Jpg jpg = jpgs.get(0);
                         ResponseEntity<Resource> resourceResponseEntity;
-                        HttpHeaders httpHeaders = new HttpHeaders();
-                        httpHeaders.add("Content-Disposition", "attachment; filename=" + jpg.getFilename());
-                        resourceResponseEntity = ResponseEntity.ok()
-                               .contentType(MediaType.parseMediaType(MediaType.IMAGE_JPEG.toString()))
-                                .header(HttpHeaders.CONTENT_DISPOSITION,"attachment; filename=\""+jpg.getFilename())
+                        return  ResponseEntity.ok()
+                               .contentType(MediaType.parseMediaType(MediaType.IMAGE_JPEG_VALUE))
+                                .header(HttpHeaders.CONTENT_DISPOSITION,"attachment; filename=\""+jpg.getFilename()+"\"")
                                 .body(new ByteArrayResource(jpg.getImageFile()));
-                        files.add(resourceResponseEntity);
+//                        files.add(resourceResponseEntity);
                     }
-            );
-            return files;
-        }
+//            );
+
+//        }
 
         return null;
     }
