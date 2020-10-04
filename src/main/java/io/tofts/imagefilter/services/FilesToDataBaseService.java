@@ -19,21 +19,20 @@ import java.nio.file.Paths;
 @Service
 public class FilesToDataBaseService {
 
+    private final String FOLDER_NAME = "imageFolder";
     @Autowired
     TagToDTO tagToDTO;
-
-    private final String FOLDER_NAME = "imageFolder";
 
     public Metadata convertFile(MultipartFile file, String userName) throws IOException, ImageProcessingException {
 
         File convFile = new File(file.getOriginalFilename());
         Path path = Paths.get(FOLDER_NAME);
-        if(!Files.exists(path))
+        if (!Files.exists(path))
             Files.createDirectory(path);
-        FileOutputStream fos = new FileOutputStream(FOLDER_NAME+"/"+convFile);
+        FileOutputStream fos = new FileOutputStream(FOLDER_NAME + "/" + convFile);
         fos.write(file.getBytes());
         fos.close();
-        File folderPath = new File(FOLDER_NAME+"/"+convFile);
+        File folderPath = new File(FOLDER_NAME + "/" + convFile);
         return tagToDTO.getFileMetaData(folderPath, userName);
     }
 

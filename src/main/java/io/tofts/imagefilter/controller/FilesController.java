@@ -51,19 +51,13 @@ public class FilesController {
         if (FileType.Jpeg.getName().equals(imageFormat)) {
             List<Jpg> jpgs = jpgSearchService.jpgSearch(jpgSearchModel);
             List<ResponseEntity<Resource>> files = new ArrayList<>();
-//            jpgs.forEach(
-//                    jpg -> {
             Jpg jpg = jpgs.get(0);
-                        ResponseEntity<Resource> resourceResponseEntity;
-                        return  ResponseEntity.ok()
-                               .contentType(MediaType.parseMediaType(MediaType.IMAGE_JPEG_VALUE))
-                                .header(HttpHeaders.CONTENT_DISPOSITION,"attachment; filename=\""+jpg.getFilename()+"\"")
-                                .body(new ByteArrayResource(jpg.getImageFile()));
-//                        files.add(resourceResponseEntity);
-                    }
-//            );
-
-//        }
+            ResponseEntity<Resource> resourceResponseEntity;
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(MediaType.IMAGE_JPEG_VALUE))
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + jpg.getFilename() + "\"")
+                    .body(new ByteArrayResource(jpg.getImageFile()));
+        }
 
         return null;
     }

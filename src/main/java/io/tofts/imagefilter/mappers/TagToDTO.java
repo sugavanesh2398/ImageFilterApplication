@@ -34,7 +34,7 @@ public class TagToDTO {
             Metadata metaData = ImageMetadataReader.readMetadata(file);
             FileTypeDirectory fileTypeDirectory = metaData.getFirstDirectoryOfType(FileTypeDirectory.class);
             if (fileTypeDirectory.getString(FileTypeDirectory.TAG_DETECTED_FILE_TYPE_NAME).equals(FileType.Jpeg.getName()))
-                 fileToJpg(file, userName, metaData);
+                fileToJpg(file, userName, metaData);
             else
                 log.error(fileTypeDirectory.getString(FileTypeDirectory.TAG_DETECTED_FILE_TYPE_NAME));
             return metaData;
