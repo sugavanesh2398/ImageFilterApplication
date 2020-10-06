@@ -9,6 +9,7 @@ import com.drew.metadata.file.FileSystemDirectory;
 import com.drew.metadata.file.FileTypeDirectory;
 import io.tofts.imagefilter.models.imageformatmodel.Jpg;
 import io.tofts.imagefilter.repository.ImageFilterRepository;
+import io.tofts.imagefilter.utils.FileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,10 @@ import java.util.Date;
 public class TagToDTO {
 
     @Autowired
-    public ImageFilterRepository imageFilterRepository;
+    private ImageFilterRepository imageFilterRepository;
+
+    @Autowired
+    private FileUtils fileUtils;
 
     public Metadata getFileMetaData(File file, String userName) {
         try {
@@ -70,7 +74,7 @@ public class TagToDTO {
             jpg.setFileSize(fileSystemDirectory.getString(FileSystemDirectory.TAG_FILE_SIZE));
         }
 
-        jpg.setMd5(getMD5(file));
+        jpg.setMd5(fileUtils.getMD5(file));
         imageFilterRepository.save(jpg);
 
         return jpg;
@@ -78,16 +82,6 @@ public class TagToDTO {
 
 
     //Helper Functions
-    private String getMD5(File file) {
-        String checksum = null;
-        try {
-            checksum = DigestUtils.md5Hex(new FileInputStream(file));
-        } catch (Exception e) {
-            log.error(e.getMessage());
-        }
-        return checksum;
-    }
-
     private byte[] getFileBytes(File file) throws IOException {
         byte[] picInBytes = new byte[(int) file.length()];
         FileInputStream fileInputStream = new FileInputStream(file);

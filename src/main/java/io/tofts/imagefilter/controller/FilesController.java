@@ -39,7 +39,7 @@ public class FilesController {
 
         List<Metadata> metadataList = new ArrayList<Metadata>();
         for (MultipartFile file : files) {
-            metadataList.add(filesToDataBaseService.convertFile(file, userName));
+            metadataList.add(filesToDataBaseService.convertAndSaveFile(file, userName));
         }
         return ResponseEntity.ok(metadataList);
 
