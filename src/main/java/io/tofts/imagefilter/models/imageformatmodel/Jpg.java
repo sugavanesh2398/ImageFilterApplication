@@ -9,7 +9,6 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Lob;
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
@@ -25,7 +24,6 @@ public class Jpg {
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid2")
     private String imageId;
-    private String userName;
     private String filename;
     private Date imageDate;
     private Time makeTime;
@@ -42,8 +40,6 @@ public class Jpg {
     private String md5;
     private String fileSize;
     private Timestamp timeStampFromImage;
-    @Lob
-    private byte[] imageFile;
     private Timestamp timeStamp;
 
 }

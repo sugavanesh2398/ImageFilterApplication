@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -32,12 +31,12 @@ public class TagToDTO {
     @Autowired
     private FileUtils fileUtils;
 
-    public Metadata getFileMetaData(File file, String userName) {
+    public Metadata getFileMetaData(File file) {
         try {
             Metadata metaData = ImageMetadataReader.readMetadata(file);
             FileTypeDirectory fileTypeDirectory = metaData.getFirstDirectoryOfType(FileTypeDirectory.class);
             if (fileTypeDirectory.getString(FileTypeDirectory.TAG_DETECTED_FILE_TYPE_NAME).equals(FileType.Jpeg.getName()))
-                fileToJpg(file, userName, metaData);
+                fileToJpg(file, metaData);
             else
                 log.error(fileTypeDirectory.getString(FileTypeDirectory.TAG_DETECTED_FILE_TYPE_NAME));
             return metaData;
@@ -47,12 +46,11 @@ public class TagToDTO {
         return null;
     }
 
-    private Jpg fileToJpg(File file, String userName, Metadata jpgMetaData) throws ImageProcessingException, IOException {
+    private Jpg fileToJpg(File file, Metadata jpgMetaData) throws ImageProcessingException, IOException {
         Jpg jpg = new Jpg();
         ExifSubIFDDirectory exifDirectory = jpgMetaData.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
         FileSystemDirectory fileSystemDirectory = jpgMetaData.getFirstDirectoryOfType(FileSystemDirectory.class);
 
-        jpg.setUserName(userName);
         if (exifDirectory != null) {
             jpg.setImageWidth(exifDirectory.getString(ExifSubIFDDirectory.TAG_EXIF_IMAGE_WIDTH));
             jpg.setImageHeight(exifDirectory.getString(ExifSubIFDDirectory.TAG_EXIF_IMAGE_HEIGHT));
@@ -64,7 +62,6 @@ public class TagToDTO {
             jpg.setIso(exifDirectory.getString(ExifSubIFDDirectory.TAG_ISO_EQUIVALENT));
             jpg.setShutterSpeed(exifDirectory.getString(ExifSubIFDDirectory.TAG_SHUTTER_SPEED));
             jpg.setTimeStampFromImage(getTimeStamp(exifDirectory.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL)));
-            jpg.setImageFile(getFileBytes(file));
             jpg.setTimeStamp(Timestamp.from(Instant.now()));
         }
 
@@ -77,16 +74,6 @@ public class TagToDTO {
         imageFilterRepository.save(jpg);
 
         return jpg;
-    }
-
-
-    //Helper Functions
-    private byte[] getFileBytes(File file) throws IOException {
-        byte[] picInBytes = new byte[(int) file.length()];
-        FileInputStream fileInputStream = new FileInputStream(file);
-        fileInputStream.read(picInBytes);
-        fileInputStream.close();
-        return picInBytes;
     }
 
     private Timestamp getTimeStamp(Date date) {

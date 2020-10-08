@@ -14,8 +14,10 @@ public class FileUtils {
     public String getMD5(File file) {
         String checksum = null;
         try {
-            checksum = DigestUtils.md5Hex(new FileInputStream(file));
+            FileInputStream fileInputStream = new FileInputStream(file);
+            checksum = DigestUtils.md5Hex(fileInputStream);
             log.error(checksum);
+            fileInputStream.close();
         } catch (Exception e) {
             log.error(e.getMessage());
         }

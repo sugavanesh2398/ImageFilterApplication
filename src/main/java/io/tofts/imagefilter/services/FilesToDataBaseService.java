@@ -1,6 +1,5 @@
 package io.tofts.imagefilter.services;
 
-import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Metadata;
 import io.tofts.imagefilter.configuration.ApplicationConfiguration;
 import io.tofts.imagefilter.mappers.TagToDTO;
@@ -8,12 +7,11 @@ import io.tofts.imagefilter.utils.FileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.file.Files;
 
 @Slf4j
 @Service
@@ -28,20 +26,15 @@ public class FilesToDataBaseService {
     @Autowired
     TagToDTO tagToDTO;
 
-    public Metadata convertAndSaveFile(MultipartFile file, String userName) throws IOException, ImageProcessingException {
+    public Metadata saveMetaDataToDB(List<String> fileNames, String userName) {
 
-        File convFile = new File(file.getOriginalFilename());
-        FileOutputStream fos = new FileOutputStream(applicationConfiguration.getSaveImagesTo() + "/" + convFile);
-        fos.write(file.getBytes());
-        fos.close();
-        File folderPath = new File(applicationConfiguration.getSaveImagesTo() + "/" + convFile);
-        String md5 = fileUtils.getMD5(folderPath);
-        File fileWithMD5 = new File(folderPath.getParent(),md5);
-        Files.copy(folderPath.toPath(),fileWithMD5.toPath());
-//        return tagToDTO.getFileMetaData(folderPath, userName);
-
+        fileNames.stream().parallel()
+                .forEach(
+                        fileName -> {
+                           tagToDTO.getFileMetaData(new File(applicationConfiguration.getSaveImagesTo()+"/"+userName+"/"+fileName));
+                        }
+                );
         return null;
     }
-
 }
 
