@@ -26,4 +26,5 @@ logging:
     web: info
 folder:
   location: Images
+  compress: ResponseFolder
 
