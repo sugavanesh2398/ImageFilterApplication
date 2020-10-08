@@ -15,6 +15,7 @@ public class FileUtils {
         String checksum = null;
         try {
             checksum = DigestUtils.md5Hex(new FileInputStream(file));
+            log.error(checksum);
         } catch (Exception e) {
             log.error(e.getMessage());
         }
