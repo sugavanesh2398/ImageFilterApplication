@@ -1,7 +1,6 @@
 package io.tofts.imagefilter.controller;
 
 import com.drew.imaging.FileType;
-import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Metadata;
 import io.tofts.imagefilter.configuration.ApplicationConfiguration;
 import io.tofts.imagefilter.models.imageformatmodel.Jpg;
@@ -9,7 +8,7 @@ import io.tofts.imagefilter.models.searchmodel.JpgSearchModel;
 import io.tofts.imagefilter.repository.ImageFilterRepository;
 import io.tofts.imagefilter.services.FilesToDataBaseService;
 import io.tofts.imagefilter.services.JpgSearchService;
-import io.tofts.imagefilter.utils.FileUtils;
+import io.tofts.imagefilter.utils.ImageFileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +21,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -44,31 +41,12 @@ public class FilesController {
     ApplicationConfiguration applicationConfiguration;
 
     @Autowired
-    FileUtils fileUtils;
+    ImageFileUtils imageFileUtils;
 
     @PostMapping(value = "/addfiles")
-    public ResponseEntity fileProcess(@RequestParam MultipartFile[] files, @RequestParam String userName) throws IOException, ImageProcessingException {
+    public ResponseEntity<List<Metadata>> fileProcess(@RequestParam MultipartFile[] files, @RequestParam String userName) {
 
-        List<Metadata> metadataList = new ArrayList<Metadata>();
-        Path folderPath = Paths.get(applicationConfiguration.getSaveImagesTo() + "/" + userName);
-        if (!Files.exists(folderPath))
-            Files.createDirectory(folderPath);
-        List<String> fileNames = new ArrayList<>();
-        Arrays.asList(files).stream().forEach(file -> {
-            try {
-                String extension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
-                log.error(file.getOriginalFilename());
-                String fileName = "IMG" + Instant.now().toString().replace(":", "-");
-                Path path = Paths.get(applicationConfiguration.getSaveImagesTo() + "/" + userName + "/" + fileName + extension);
-                Files.copy(file.getInputStream(), path);
-                fileNames.add(fileName + extension);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-        log.error(fileNames.toString());
-        filesToDataBaseService.saveMetaDataToDB(fileNames, userName);
-
+        List<Metadata> metadataList = filesToDataBaseService.saveMetaDataToDB(files, userName);
         return ResponseEntity.ok(metadataList);
 
     }

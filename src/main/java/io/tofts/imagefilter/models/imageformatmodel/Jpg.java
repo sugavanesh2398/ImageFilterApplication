@@ -10,7 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 
 @Data
@@ -24,15 +23,14 @@ public class Jpg {
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid2")
     private String imageId;
+    private String userName;
     private String filename;
     private Date imageDate;
-    private Time makeTime;
     private String imageHeight;
     private String imageWidth;
     private String make;
     private String model;
     private String exposureTime;
-    private String fnumber;
     private String iso;
     private String shutterSpeed;
     private String aperture;
@@ -40,6 +38,6 @@ public class Jpg {
     private String md5;
     private String fileSize;
     private Timestamp timeStampFromImage;
-    private Timestamp timeStamp;
+    private String timeStamp;
 
 }

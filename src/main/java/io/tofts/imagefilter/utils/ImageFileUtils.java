@@ -9,17 +9,17 @@ import java.io.FileInputStream;
 
 @Slf4j
 @Service
-public class FileUtils {
+public class ImageFileUtils {
 
     public String getMD5(File file) {
         String checksum = null;
         try {
             FileInputStream fileInputStream = new FileInputStream(file);
             checksum = DigestUtils.md5Hex(fileInputStream);
-            log.error(checksum);
+            log.info("checksum for " + file.getName() + " = " + checksum);
             fileInputStream.close();
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Exception with checksum creation ", e);
         }
         return checksum;
     }
