@@ -38,10 +38,20 @@ public class FilesToDataBaseService {
     public List<Metadata> saveMetaDataToDB(MultipartFile[] imageFiles, String userName) {
 
         List<Metadata> metadataList = new ArrayList<Metadata>();
+        Path outputFolderPath = Paths.get(applicationConfiguration.getResponseFolder());
         Path folderPath = Paths.get(applicationConfiguration.getSaveImagesTo() + LIMITER + userName);
         if (!Files.exists(folderPath)) {
             try {
+                log.info("Creating Inputfolderpath...");
                 Files.createDirectory(folderPath);
+            } catch (IOException e) {
+                log.error("Exception at File Creation", e);
+            }
+        }
+        if (!Files.exists(outputFolderPath)) {
+            try {
+                log.info("Creating outputfolderpath...");
+                Files.createDirectory(outputFolderPath);
             } catch (IOException e) {
                 log.error("Exception at File Creation", e);
             }

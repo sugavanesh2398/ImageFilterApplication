@@ -27,6 +27,11 @@ public class ApplicationStartActions implements ApplicationRunner {
             Files.createDirectory(path);
             log.info("Folder was not present so creating one with path= "+ applicationConfiguration.getSaveImagesTo());
         }
-
+        Path path2 = Paths.get(applicationConfiguration.getResponseFolder());
+        log.info("Folder already exists");
+        if (!Files.exists(path2)) {
+            Files.createDirectory(path2);
+            log.info("Folder was not present so creating one with path= "+ applicationConfiguration.getResponseFolder());
+        }
     }
 }

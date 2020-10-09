@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -16,7 +18,17 @@ public class JpgSearchService {
 
     @Autowired
     ImageFilterRepository imageFilterRepository;
-
+    public ArrayList<String> populateFilesList(File dir){
+        ArrayList<String> filesListInDir=new ArrayList<>();
+        File[] files = dir.listFiles();
+        for(File file : files){
+            if(file.isFile())
+                filesListInDir.add(file.getAbsolutePath());
+            else
+                populateFilesList(file);
+        }
+        return filesListInDir;
+    }
     public List<Jpg> jpgSearch(JpgSearchModel jpgSearchModel) {
 
         log.info(jpgSearchModel.toString());
@@ -25,10 +37,10 @@ public class JpgSearchService {
                 .builder()
                 .aperture(jpgSearchModel.getAperture())
                 .exposureTime(jpgSearchModel.getExposureTime())
-                .fnumber(jpgSearchModel.getFnumber())
                 .imageHeight(jpgSearchModel.getImageHeight())
                 .imageWidth(jpgSearchModel.getImageWidth())
                 .iso(jpgSearchModel.getIso())
+                .focalLength(jpgSearchModel.getFocalLength())
                 .make(jpgSearchModel.getMake())
                 .model(jpgSearchModel.getMake())
                 .shutterSpeed(jpgSearchModel.getShutterSpeed())

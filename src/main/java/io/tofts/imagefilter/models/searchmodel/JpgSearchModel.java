@@ -17,7 +17,6 @@ public class JpgSearchModel {
     private String make;
     private String model;
     private String exposureTime;
-    private String fnumber;
     private String iso;
     private String shutterSpeed;
     private String aperture;

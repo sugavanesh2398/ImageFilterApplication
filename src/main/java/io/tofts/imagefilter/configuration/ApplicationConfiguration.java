@@ -13,6 +13,7 @@ public class ApplicationConfiguration {
     private String responseFolder;
 
     public String getResponseFolder() {
+
         return responseFolder;
     }
 
@@ -23,6 +24,7 @@ public class ApplicationConfiguration {
     public String getSaveImagesTo() {
         return saveImagesTo;
     }
+
 
     public void setSaveImagesTo(String saveImagesTo) {
         this.saveImagesTo = saveImagesTo;

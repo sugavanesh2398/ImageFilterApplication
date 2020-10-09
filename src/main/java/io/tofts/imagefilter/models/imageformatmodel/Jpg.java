@@ -20,9 +20,7 @@ import java.sql.Timestamp;
 public class Jpg {
 
     @Id
-    @GeneratedValue(generator = "system-uuid")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid2")
-    private String imageId;
+    private String md5;
     private String userName;
     private String filename;
     private Date imageDate;
@@ -35,7 +33,6 @@ public class Jpg {
     private String shutterSpeed;
     private String aperture;
     private String focalLength;
-    private String md5;
     private String fileSize;
     private Timestamp timeStampFromImage;
     private String timeStamp;

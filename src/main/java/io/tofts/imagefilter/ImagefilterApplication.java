@@ -10,5 +10,4 @@ public class ImagefilterApplication {
         SpringApplication.run(ImagefilterApplication.class, args);
 
     }
-
 }
