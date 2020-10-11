@@ -30,6 +30,7 @@ public class Jpg {
     private String model;
     private String exposureTime;
     private String iso;
+    private String fNumber;
     private String shutterSpeed;
     private String aperture;
     private String focalLength;

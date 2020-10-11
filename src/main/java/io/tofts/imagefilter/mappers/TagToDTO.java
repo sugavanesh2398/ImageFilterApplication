@@ -61,6 +61,7 @@ public class TagToDTO {
             jpg.setIso(exifSubIFDDirectory.getString(ExifSubIFDDirectory.TAG_ISO_EQUIVALENT));
             jpg.setShutterSpeed(exifSubIFDDirectory.getString(ExifSubIFDDirectory.TAG_SHUTTER_SPEED));
             jpg.setTimeStampFromImage(parseTimeStamp(exifSubIFDDirectory.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL)));
+            jpg.setFNumber(exifSubIFDDirectory.getString(ExifSubIFDDirectory.TAG_FNUMBER));
             jpg.setTimeStamp(getCurrentTime());
         }
 

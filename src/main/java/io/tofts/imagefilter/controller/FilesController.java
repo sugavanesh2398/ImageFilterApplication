@@ -74,7 +74,7 @@ public class FilesController {
     }
 
     @PostMapping(value = "/search")
-    public ResponseEntity searchFiles(@RequestParam String imageFormat, @RequestBody JpgSearchModel jpgSearchModel) throws IOException {
+    public ResponseEntity searchFiles(@RequestParam String username, @RequestParam String imageFormat, @RequestBody JpgSearchModel jpgSearchModel) throws IOException {
         Path path2 = Paths.get(applicationConfiguration.getResponseFolder());
         log.info("Folder already exists");
         if (!Files.exists(path2)) {
@@ -91,10 +91,10 @@ public class FilesController {
                     .forEach(
                             jpg -> {
                                 System.out.println(jpg.getFilename());
-                                Path path = Paths.get(applicationConfiguration.getSaveImagesTo() + "/Sugavanesh/" + jpg.getFilename());
+                                Path path = Paths.get(applicationConfiguration.getSaveImagesTo() +"/"+ username +"/"+ jpg.getFilename());
                                 try {
                                     String extension = jpg.getFilename().substring(jpg.getFilename().lastIndexOf("."));
-                                    Files.copy(Paths.get(applicationConfiguration.getSaveImagesTo() + "/Sugavanesh/" + jpg.getFilename()), Paths.get(compressFolderName + "/" + jpg.getFilename()));
+                                    Files.copy(Paths.get(applicationConfiguration.getSaveImagesTo() + "/"+ username +"/" + jpg.getFilename()), Paths.get(compressFolderName + "/" + jpg.getFilename()));
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
@@ -137,21 +137,30 @@ public class FilesController {
             }
             String mineType = context.getMimeType(new File(zipfile).getName());
             MediaType mediaType = MediaType.parseMediaType(mineType);
-
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + new File(zipfile).getName())
-                    .contentType(mediaType)
-                    .body(resource);
+            if(jpgs.size()>0) {
+                return ResponseEntity.ok()
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + new File(zipfile).getName())
+                        .contentType(mediaType)
+                        .body(resource);
+            }else{
+                return ResponseEntity.ok().body("No files were detected for your search filter");
+            }
         }
 
-        return null;
+        return ResponseEntity.ok().body("Try with image format: JPEG");
     }
 
-    @PostMapping(value = "/flushit/{username}")
-    public ResponseEntity deleteFiles(@RequestParam String userName) throws IOException {
+    @PostMapping(value = "/flushit")
+    public ResponseEntity deleteFiles() throws IOException {
         Path folderPath=Paths.get(applicationConfiguration.getResponseFolder());
         //Files.deleteIfExists(folderPath);
-        FileUtils.deleteDirectory(new File(applicationConfiguration.getResponseFolder()));
+        try {
+            FileUtils.forceDelete(new File(applicationConfiguration.getResponseFolder()));
+            //FileUtils.deleteDirectory(new File(applicationConfiguration.getResponseFolder()));
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
         return ResponseEntity.ok("files deleted");
     }
 

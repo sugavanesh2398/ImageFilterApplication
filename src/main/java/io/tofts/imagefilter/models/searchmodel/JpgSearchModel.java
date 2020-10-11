@@ -18,8 +18,10 @@ public class JpgSearchModel {
     private String model;
     private String exposureTime;
     private String iso;
+    private String fNUmber;
     private String shutterSpeed;
     private String aperture;
     private String focalLength;
+
 
 }
