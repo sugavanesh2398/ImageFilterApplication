@@ -1,0 +1,12 @@
+E:\imagefilter\src\main\java\io\tofts\imagefilter\services\JpgSearchService.java
+E:\imagefilter\src\main\java\io\tofts\imagefilter\utils\ImageFileUtils.java
+E:\imagefilter\src\main\java\io\tofts\imagefilter\configuration\SwaggerConfiguration.java
+E:\imagefilter\src\main\java\io\tofts\imagefilter\mappers\TagToDTO.java
+E:\imagefilter\src\main\java\io\tofts\imagefilter\controller\FilesController.java
+E:\imagefilter\src\main\java\io\tofts\imagefilter\configuration\ApplicationConfiguration.java
+E:\imagefilter\src\main\java\io\tofts\imagefilter\repository\ImageFilterRepository.java
+E:\imagefilter\src\main\java\io\tofts\imagefilter\services\FilesToDataBaseService.java
+E:\imagefilter\src\main\java\io\tofts\imagefilter\configuration\ApplicationStartActions.java
+E:\imagefilter\src\main\java\io\tofts\imagefilter\models\imageformatmodel\Jpg.java
+E:\imagefilter\src\main\java\io\tofts\imagefilter\models\searchmodel\JpgSearchModel.java
+E:\imagefilter\src\main\java\io\tofts\imagefilter\ImagefilterApplication.java

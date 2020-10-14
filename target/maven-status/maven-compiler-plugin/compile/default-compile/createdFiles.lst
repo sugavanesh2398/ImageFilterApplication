@@ -1,0 +1,14 @@
+io\tofts\imagefilter\models\searchmodel\JpgSearchModel.class
+io\tofts\imagefilter\configuration\ApplicationConfiguration.class
+io\tofts\imagefilter\ImagefilterApplication.class
+io\tofts\imagefilter\controller\FilesController.class
+io\tofts\imagefilter\mappers\TagToDTO.class
+io\tofts\imagefilter\models\searchmodel\JpgSearchModel$JpgSearchModelBuilder.class
+io\tofts\imagefilter\configuration\SwaggerConfiguration.class
+io\tofts\imagefilter\services\FilesToDataBaseService.class
+io\tofts\imagefilter\utils\ImageFileUtils.class
+io\tofts\imagefilter\configuration\ApplicationStartActions.class
+io\tofts\imagefilter\models\imageformatmodel\Jpg$JpgBuilder.class
+io\tofts\imagefilter\models\imageformatmodel\Jpg.class
+io\tofts\imagefilter\services\JpgSearchService.class
+io\tofts\imagefilter\repository\ImageFilterRepository.class
