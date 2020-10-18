@@ -1,4 +1,12 @@
 spring:
+  main:
+    allow-bean-definition-overriding: true
+  data:
+    elasticsearch:
+      cluster-name: elasticsearch
+      cluster-node: localhost:9200
+      repository:
+        enable : true
   servlet:
     multipart:
       max-file-size: 100MB

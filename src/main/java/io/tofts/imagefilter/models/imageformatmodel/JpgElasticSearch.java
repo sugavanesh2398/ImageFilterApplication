@@ -4,12 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import java.sql.Date;
 import java.sql.Timestamp;
 
@@ -17,16 +14,17 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Entity
-public class Jpg {
+@Document(indexName = "jpgelasticsearch")
+public class JpgElasticSearch {
 
     @Id
     private String md5;
+
     private String userName;
     private String filename;
     private Date imageDate;
-    private String imageHeight;
-    private String imageWidth;
+    private int imageHeight;
+    private int imageWidth;
     private String make;
     private String model;
     private String exposureTime;
@@ -34,9 +32,8 @@ public class Jpg {
     private String fNumber;
     private String shutterSpeed;
     private String aperture;
-    private String focalLength;
-    private String fileSize;
+    private int focalLength;
+    private int fileSize;
     private Timestamp timeStampFromImage;
     private String timeStamp;
-
 }
