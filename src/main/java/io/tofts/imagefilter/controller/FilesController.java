@@ -37,6 +37,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 @Slf4j
+@CrossOrigin
 @RestController
 @RequestMapping("/files")
 public class FilesController {
